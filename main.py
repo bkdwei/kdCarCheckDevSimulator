@@ -12,4 +12,5 @@ if __name__ == '__main__':
         from kdCarCheckDevSimulator.kdCarCheckDevSimulator import main
         main()
     except Exception as e:
+        print(e)
         messagebox.showerror("系统异常", str(e))
