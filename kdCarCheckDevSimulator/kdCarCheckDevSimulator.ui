@@ -158,21 +158,21 @@
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_2">
            <item>
-            <widget class="QPushButton" name="pushButton_3">
+            <widget class="QPushButton" name="pb_add_cmd">
              <property name="text">
               <string>新增命令</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="pushButton_4">
+            <widget class="QPushButton" name="pb_del_cmd">
              <property name="text">
               <string>删除命令</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="pushButton_5">
+            <widget class="QPushButton" name="pb_modify_cmd">
              <property name="text">
               <string>修改命令</string>
              </property>
@@ -181,7 +181,7 @@
           </layout>
          </item>
          <item>
-          <widget class="QTableWidget" name="tableWidget"/>
+          <widget class="QListWidget" name="lw_cmd"/>
          </item>
         </layout>
        </widget>

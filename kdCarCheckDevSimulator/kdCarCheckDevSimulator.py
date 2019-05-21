@@ -3,6 +3,7 @@ Created on 2019年5月20日
 
 @author: bkd
 '''
+from PyQt5.Qt import QListWidgetItem
 
 '''
 Created on 2019年5月9日
@@ -14,14 +15,15 @@ import time
 from os import environ,startfile,system
 from os.path import expanduser,join
 from PyQt5.QtCore import pyqtSlot
-from PyQt5.QtWidgets import  QApplication,QFileDialog, \
-    QMainWindow, QInputDialog,QLineEdit, QMessageBox,QTreeWidgetItem
+from PyQt5.QtWidgets import  QApplication,QDialog, \
+    QMainWindow, QInputDialog,QLineEdit, QTreeWidgetItem
     
 from .kdCarCheckDevSimulator_ui import Ui_MainWindow
 from .fileutil import check_and_create
 from .exception_handler import global_exception_hander
 from . import line
 from . import device
+from . import cmd 
 
 class kdCarCheckDevSimulator(QMainWindow,Ui_MainWindow):
     def __init__(self):
@@ -40,6 +42,7 @@ class kdCarCheckDevSimulator(QMainWindow,Ui_MainWindow):
         self.selected_lineId = None
         
         self.tw_device.itemPressed.connect(self.on_tw_device_itemPressed)
+        self.dlg_cmd = cmd.cmd()
         
         
                   
@@ -136,6 +139,8 @@ class kdCarCheckDevSimulator(QMainWindow,Ui_MainWindow):
             self.le_dev_model.setText(self.selected_device[2])
             self.le_com_port.setText(self.selected_device[3])
             
+            self.refresh_cmd()
+            
 
 #     新增设备
     @pyqtSlot()
@@ -165,6 +170,41 @@ class kdCarCheckDevSimulator(QMainWindow,Ui_MainWindow):
             self.init_tw_dev()
             self.on_pb_add_device_clicked()
             self.statusbar.showMessage("删除设备成功")
+            
+# 新增命令            
+    @pyqtSlot()
+    def on_pb_add_cmd_clicked(self):
+            self.dlg_cmd.set_model(self.selected_device[2])
+            self.dlg_cmd.show()
+            self.dlg_cmd.add_signal.connect(self.refresh_cmd)
+            self.dlg_cmd.modify_signal.connect(self.refresh_cmd)
+    
+    def refresh_cmd(self):
+        self.lw_cmd.clear()
+        cmd_list = self.dlg_cmd.get_all(self.selected_device[2])
+        if cmd_list:
+            for cmd_item in cmd_list :
+                item =QListWidgetItem(cmd_item[3])  
+                item.setData(-1,cmd_item)
+                self.lw_cmd.addItem(item) 
+
+#     删除命令
+    @pyqtSlot()
+    def on_pb_del_cmd_clicked(self):
+        seleted_item = self.lw_cmd.currentItem()
+        self.dlg_cmd.delete_cmd(seleted_item.data(-1)[0])
+        
+        self.refresh_cmd()
+        self.statusbar.showMessage("删除命令成功")   
+
+#     修改命令
+    @pyqtSlot()
+    def on_pb_modify_cmd_clicked(self):
+        seleted_item = self.lw_cmd.currentItem()
+        if seleted_item :
+            self.dlg_cmd.set_cmd_item(seleted_item.data(-1))
+            self.dlg_cmd.show()
+            
             
 def main():
     app = QApplication(sys.argv)
