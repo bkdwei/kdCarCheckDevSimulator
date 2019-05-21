@@ -195,21 +195,21 @@
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_3">
            <item>
-            <widget class="QPushButton" name="pushButton_6">
+            <widget class="QPushButton" name="pb_add_reply">
              <property name="text">
               <string>新增响应</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="pushButton_7">
+            <widget class="QPushButton" name="pb_del_reply">
              <property name="text">
               <string>删除响应</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="pushButton_8">
+            <widget class="QPushButton" name="pb_modify_reply">
              <property name="text">
               <string>修改相应</string>
              </property>
@@ -218,7 +218,7 @@
           </layout>
          </item>
          <item>
-          <widget class="QTableWidget" name="tableWidget_2"/>
+          <widget class="QTableWidget" name="tw_reply"/>
          </item>
         </layout>
        </widget>

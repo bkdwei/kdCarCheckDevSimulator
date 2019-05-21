@@ -24,6 +24,7 @@ from .exception_handler import global_exception_hander
 from . import line
 from . import device
 from . import cmd 
+from . import reply
 
 class kdCarCheckDevSimulator(QMainWindow,Ui_MainWindow):
     def __init__(self):
@@ -43,6 +44,9 @@ class kdCarCheckDevSimulator(QMainWindow,Ui_MainWindow):
         
         self.tw_device.itemPressed.connect(self.on_tw_device_itemPressed)
         self.dlg_cmd = cmd.cmd()
+        self.dlg_reply = reply.reply()
+#         self.dlg_reply.add_signal.connect(self.refresh_cmd)
+#         self.dlg_reply.modify_signal.connect(self.refresh_cmd) 
         
         
                   
@@ -174,6 +178,7 @@ class kdCarCheckDevSimulator(QMainWindow,Ui_MainWindow):
 # 新增命令            
     @pyqtSlot()
     def on_pb_add_cmd_clicked(self):
+        if self.selected_device:
             self.dlg_cmd.set_model(self.selected_device[2])
             self.dlg_cmd.show()
             self.dlg_cmd.add_signal.connect(self.refresh_cmd)
@@ -205,6 +210,14 @@ class kdCarCheckDevSimulator(QMainWindow,Ui_MainWindow):
             self.dlg_cmd.set_cmd_item(seleted_item.data(-1))
             self.dlg_cmd.show()
             
+# 新增响应            
+    @pyqtSlot()
+    def on_pb_add_reply_clicked(self):
+        seleted_item = self.lw_cmd.currentItem()
+        if seleted_item :
+            self.dlg_reply.set_cmd(seleted_item.data(-1)[3])
+            self.dlg_reply.cmd_id = seleted_item.data(-1)[0]
+            self.dlg_reply.show()
             
 def main():
     app = QApplication(sys.argv)

@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_dlg_cmd(object):
     def setupUi(self, dlg_cmd):
         dlg_cmd.setObjectName("dlg_cmd")
-        dlg_cmd.resize(416, 177)
+        dlg_cmd.resize(416, 185)
         self.formLayout = QtWidgets.QFormLayout(dlg_cmd)
         self.formLayout.setObjectName("formLayout")
         self.label = QtWidgets.QLabel(dlg_cmd)
@@ -43,7 +43,6 @@ class Ui_dlg_cmd(object):
         self.buttonGroup.addButton(self.rb_random)
         self.formLayout.setWidget(8, QtWidgets.QFormLayout.FieldRole, self.rb_random)
         self.rb_all = QtWidgets.QRadioButton(dlg_cmd)
-        self.rb_all.setChecked(True)
         self.rb_all.setObjectName("rb_all")
         self.buttonGroup.addButton(self.rb_all)
         self.formLayout.setWidget(7, QtWidgets.QFormLayout.FieldRole, self.rb_all)
