@@ -233,6 +233,7 @@ class kdCarCheckDevSimulator(QMainWindow,Ui_MainWindow):
 #             获取设备的相应
             reply_list = self.dlg_reply.get_all_by_model(self.selected_device[2])
             if reply_list :
+                self.cb_status.clear()
                 for reply_item in reply_list :
                     self.cb_status.addItem(reply_item[2],reply_item)
 
@@ -346,6 +347,7 @@ class kdCarCheckDevSimulator(QMainWindow,Ui_MainWindow):
             row_index = 0
             self.tw_reply.clear()
             for reply_item in reply_list : 
+                print(reply_item)
                 item_index = QTableWidgetItem(str(reply_item[3]))
                 self.tw_reply.setItem(row_index,0,item_index)
                 
@@ -353,7 +355,7 @@ class kdCarCheckDevSimulator(QMainWindow,Ui_MainWindow):
                 item.setData(-1,reply_item)
                 self.tw_reply.setItem(row_index,1,item)
                
-                row_index =+ 1
+                row_index =row_index + 1
     
     def refresh_reply_by_thread(self):
         self.refresh_reply(self.cmd_id)
@@ -362,7 +364,7 @@ class kdCarCheckDevSimulator(QMainWindow,Ui_MainWindow):
     def on_pb_connect_status_clicked(self):
         reply = self.cb_status.currentData()
         if self.cmd_id:
-            self.dlg_reply.add_reply(reply[1], reply[2], reply[3], self.cmd_id, reply[5])
+            self.dlg_reply.add_reply(reply[1], reply[2], reply[3], self.cmd_id, None)
             self.refresh_reply_by_thread()
             self.statusbar.showMessage("关联命令成功")
         
