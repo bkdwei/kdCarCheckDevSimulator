@@ -11,15 +11,10 @@ Created on 2019年5月9日
 @author: bkd
 '''
 import sys
-import time
-import serial
-import binascii,re
-from os import environ,startfile,system
 from os.path import expanduser,join,exists
 from shutil import copy2
 from PyQt5.QtCore import pyqtSlot
-from PyQt5.QtWidgets import  QApplication,QDialog, \
-    QMainWindow, QInputDialog,QLineEdit, QTreeWidgetItem, QTableWidgetItem
+from PyQt5.QtWidgets import  QApplication, QMainWindow, QInputDialog,QLineEdit, QTreeWidgetItem, QTableWidgetItem
     
 from .kdCarCheckDevSimulator_ui import Ui_MainWindow
 from .fileutil import check_and_create_dir,get_file_realpath
@@ -51,6 +46,7 @@ class kdCarCheckDevSimulator(QMainWindow,Ui_MainWindow):
         self.cmd_id = None
         
         self.tw_device.itemPressed.connect(self.on_tw_device_itemPressed)
+        self.tw_reply.itemClicked.connect(self.on_tw_reply_itemClicked)
         self.lw_cmd.clicked.connect(self.on_lw_cmd_clicked)
         self.dlg_cmd = cmd.cmd()
         self.dlg_reply = reply.reply()
@@ -370,7 +366,25 @@ class kdCarCheckDevSimulator(QMainWindow,Ui_MainWindow):
             self.refresh_reply_by_thread()
             self.statusbar.showMessage("关联命令成功")
         
-        
+    @pyqtSlot()
+    def on_pb_modify_reply_clicked(self):
+        cur_row = self.tw_reply.currentRow()
+        seleted_item = self.tw_reply.item(cur_row,1)
+        if seleted_item :
+            item = seleted_item.data(-1)
+            if item:
+                seleted_cmd = self.lw_cmd.currentItem()
+                cmd = seleted_cmd.text()
+                self.dlg_reply.set_data(item, cmd)
+                self.dlg_reply.show()
+    
+    def on_tw_reply_itemClicked(self):
+        cur_row = self.tw_reply.currentRow()
+        seleted_item = self.tw_reply.item(cur_row,1)
+        if seleted_item :
+            item = seleted_item.data(-1)
+            if item:
+                self.statusbar.showMessage(item[2] + "，16进制值：" + item[1]  )
 def main():
     app = QApplication(sys.argv)
     win = kdCarCheckDevSimulator()

@@ -224,7 +224,7 @@
            <item>
             <widget class="QPushButton" name="pb_modify_reply">
              <property name="text">
-              <string>修改相应</string>
+              <string>修改响应</string>
              </property>
             </widget>
            </item>

@@ -1,13 +1,8 @@
 # coding=utf-8
-import requests
-import os
-from . import fileutil
-import re
 import time
-import json
-import sys
+from re import sub
 import serial
-import binascii,re
+import binascii
 import random
 from PyQt5.QtCore import QThread, pyqtSignal
 from .reply import reply
@@ -81,7 +76,7 @@ class monitor_thread(QThread):
 #     字节数组转16进制字符串
     def asciiB2HexString(self,strB):
         strHex = binascii.b2a_hex(strB).upper()
-        return re.sub(r"(?<=\w)(?=(?:\w\w)+$)", " ", strHex.decode())+" "
+        return sub(r"(?<=\w)(?=(?:\w\w)+$)", " ", strHex.decode())+" "
     
 #     16进制字符串转字节数组
     def hexStringB2Hex(self,hexString):

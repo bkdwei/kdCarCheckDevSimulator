@@ -35,7 +35,16 @@ class reply(QDialog,Ui_dlg_reply):
     def on_buttonBox_rejected(self):
         self.hide()
         
-    
+    def set_data(self,item,cmd):
+        self.id = item[0]
+        if cmd:
+            self.lb_cmd.setText(cmd)
+        self.le_value.setText(item[1])
+        self.le_remark.setText(item[2])
+        self.sp_sequence.setValue(int(item[3]))
+        self.cmd_id = item[4]
+        
+        pass
     def set_cmd(self,cmd):
         self.lb_cmd.setText(cmd)
         
@@ -67,10 +76,7 @@ class reply(QDialog,Ui_dlg_reply):
     def get_all_by_model(self, model):
         return self.run_sql("select id,value,remark,sequence,cmd_id, model from reply where model ='{}' order by sequence".format(model))
     def modify_reply(self):
-        reply_type = 1
-        if self.rb_random.isChecked():
-            reply_type = 2
-        self.run_sql("update cmd set  value ='{}', remark='{}', reply_type ='{}' where id='{}'".format(self.le_value.text(),self.le_remark.text(),reply_type,self.id))
+        self.run_sql("update reply set  value ='{}', remark='{}', sequence ='{}' ,cmd_id ='{}'  ,model ='{}' where id='{}'".format(self.le_value.text().strip(),self.le_remark.text().strip(),self.sp_sequence.value(),self.cmd_id,None,self.id))
     
     def run_sql(self, sql):    
         conn = sqlite3.connect(self.db_file)

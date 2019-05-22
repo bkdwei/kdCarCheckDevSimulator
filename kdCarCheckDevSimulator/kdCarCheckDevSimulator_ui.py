@@ -199,7 +199,7 @@ class Ui_MainWindow(object):
         self.groupBox_3.setTitle(_translate("MainWindow", "响应"))
         self.pb_add_reply.setText(_translate("MainWindow", "新增响应"))
         self.pb_del_reply.setText(_translate("MainWindow", "删除响应"))
-        self.pb_modify_reply.setText(_translate("MainWindow", "修改相应"))
+        self.pb_modify_reply.setText(_translate("MainWindow", "修改响应"))
         self.toolBar.setWindowTitle(_translate("MainWindow", "toolBar"))
         self.action_start_line.setText(_translate("MainWindow", "启动检测线"))
         self.action_stop_line.setText(_translate("MainWindow", "停止检测线"))

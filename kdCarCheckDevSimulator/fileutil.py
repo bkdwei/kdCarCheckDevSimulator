@@ -7,7 +7,6 @@ def get_file_realpath(file):
 def check_and_create(absolute_file_path):
     slash_last_index = absolute_file_path.rindex("/")
     path = absolute_file_path[:slash_last_index]
-    file = absolute_file_path[slash_last_index + 1:]
     # 检查目录
     if os.path.exists(path) is not True:
         os.makedirs(path)
