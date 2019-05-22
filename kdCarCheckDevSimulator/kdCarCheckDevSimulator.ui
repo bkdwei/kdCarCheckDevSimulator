@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>检测线模拟器</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout_5">
@@ -274,6 +274,7 @@
    <addaction name="action_stop_line"/>
    <addaction name="action_start_single_dev"/>
    <addaction name="action_stop_single_dev"/>
+   <addaction name="action_import_cmd_by_mysql"/>
   </widget>
   <action name="action_start_line">
    <property name="text">
@@ -293,6 +294,11 @@
   <action name="action_stop_single_dev">
    <property name="text">
     <string>停止单个设备</string>
+   </property>
+  </action>
+  <action name="action_import_cmd_by_mysql">
+   <property name="text">
+    <string>从mysql批量导入命令</string>
    </property>
   </action>
  </widget>

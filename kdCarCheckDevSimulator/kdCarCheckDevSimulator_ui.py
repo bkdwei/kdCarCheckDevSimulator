@@ -155,17 +155,20 @@ class Ui_MainWindow(object):
         self.action_start_single_dev.setObjectName("action_start_single_dev")
         self.action_stop_single_dev = QtWidgets.QAction(MainWindow)
         self.action_stop_single_dev.setObjectName("action_stop_single_dev")
+        self.action_import_cmd_by_mysql = QtWidgets.QAction(MainWindow)
+        self.action_import_cmd_by_mysql.setObjectName("action_import_cmd_by_mysql")
         self.toolBar.addAction(self.action_start_line)
         self.toolBar.addAction(self.action_stop_line)
         self.toolBar.addAction(self.action_start_single_dev)
         self.toolBar.addAction(self.action_stop_single_dev)
+        self.toolBar.addAction(self.action_import_cmd_by_mysql)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "检测线模拟器"))
         self.groupBox.setTitle(_translate("MainWindow", "设备连接信息"))
         self.pb_add_line.setText(_translate("MainWindow", "新增检测线"))
         self.pb_del_line.setText(_translate("MainWindow", "删除检测线"))
@@ -192,4 +195,5 @@ class Ui_MainWindow(object):
         self.action_stop_line.setText(_translate("MainWindow", "停止检测线"))
         self.action_start_single_dev.setText(_translate("MainWindow", "启动单个设备"))
         self.action_stop_single_dev.setText(_translate("MainWindow", "停止单个设备"))
+        self.action_import_cmd_by_mysql.setText(_translate("MainWindow", "从mysql批量导入命令"))
 

@@ -28,6 +28,7 @@ from . import device
 from . import cmd 
 from . import reply
 from .monitor_thread import monitor_thread
+from .import_cmd import import_cmd
 
 class kdCarCheckDevSimulator(QMainWindow,Ui_MainWindow):
     def __init__(self):
@@ -147,6 +148,14 @@ class kdCarCheckDevSimulator(QMainWindow,Ui_MainWindow):
                 t.terminate()
                 del self.thread_list[device_item[3]]
         
+#     从mysql导入命令
+    @pyqtSlot()
+    def on_action_import_cmd_by_mysql_triggered(self):
+        connect_str,ok = QInputDialog.getText(self  , "批量导入命令", "数据库连接信息,以分号分隔，如\nhost;port;user;password;db")
+        if ok :
+            self.import_cmd = import_cmd(connect_str)
+            self.import_cmd.show_status_signal.connect(self.show_monitor_status)
+            self.import_cmd.start()
     
     def show_monitor_status(self,msg):
         self.tb_monitor.append(msg)
