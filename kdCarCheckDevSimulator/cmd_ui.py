@@ -43,6 +43,7 @@ class Ui_dlg_cmd(object):
         self.buttonGroup.addButton(self.rb_random)
         self.formLayout.setWidget(8, QtWidgets.QFormLayout.FieldRole, self.rb_random)
         self.rb_all = QtWidgets.QRadioButton(dlg_cmd)
+        self.rb_all.setChecked(True)
         self.rb_all.setObjectName("rb_all")
         self.buttonGroup.addButton(self.rb_all)
         self.formLayout.setWidget(7, QtWidgets.QFormLayout.FieldRole, self.rb_all)

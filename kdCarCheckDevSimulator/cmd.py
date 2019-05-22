@@ -30,7 +30,7 @@ class cmd(QDialog,Ui_dlg_cmd):
             self.modify_cmd()
             self.modify_signal.emit(self.le_remark.text())
         else :
-            self.add_cmd(self.lb_model.text(), self.le_value.text(), self.le_remark.text(),reply_type)
+            self.add_cmd(self.lb_model.text(), self.le_value.text().strip().upper(), self.le_remark.text().strip().upper(),reply_type)
             self.add_signal.emit(self.le_remark.text())
         self.hide()
     @pyqtSlot()
@@ -38,6 +38,10 @@ class cmd(QDialog,Ui_dlg_cmd):
         self.hide()
         
     
+    def reset(self):
+        self.le_value.clear()
+        self.le_remark.clear()
+        
     def set_model(self,model):
         self.lb_model.setText(model)
         

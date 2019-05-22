@@ -42,6 +42,7 @@ class kdCarCheckDevSimulator(QMainWindow,Ui_MainWindow):
         self.init_tw_dev()
         self.selected_device = None
         self.selected_lineId = None
+        self.cmd_id = None
         
         self.tw_device.itemPressed.connect(self.on_tw_device_itemPressed)
         self.lw_cmd.clicked.connect(self.on_lw_cmd_clicked)
@@ -49,7 +50,7 @@ class kdCarCheckDevSimulator(QMainWindow,Ui_MainWindow):
         self.dlg_reply = reply.reply()
         self.thread_list= {}
 #         self.dlg_reply.add_signal.connect(self.refresh_cmd)
-#         self.dlg_reply.modify_signal.connect(self.refresh_cmd) 
+        self.dlg_reply.modify_signal.connect(self.refresh_reply_by_thread) 
         
                   
     def init_tw_dev(self):
@@ -198,14 +199,17 @@ class kdCarCheckDevSimulator(QMainWindow,Ui_MainWindow):
             self.selected_lineId = seleted_item.data(0,-2)
             self.selected_device = None
             self.on_pb_add_device_clicked()
+            self.tw_reply.clear()
         else :
             self.selected_device = seleted_item.data(0,-2)
-            self.selected_lineId = self.selected_device[4]
+#             self.selected_lineId = self.selected_device[4]
+            self.selected_lineId = None
             self.le_big_item.setText(self.selected_device[1])
             self.le_dev_model.setText(self.selected_device[2])
             self.le_com_port.setText(self.selected_device[3])
             
             self.refresh_cmd()
+            self.tw_reply.clear()
             
 
 #     新增设备
@@ -242,6 +246,7 @@ class kdCarCheckDevSimulator(QMainWindow,Ui_MainWindow):
     def on_pb_add_cmd_clicked(self):
         if self.selected_device:
             self.dlg_cmd.set_model(self.selected_device[2])
+            self.dlg_cmd.reset()
             self.dlg_cmd.show()
             self.dlg_cmd.add_signal.connect(self.refresh_cmd)
             self.dlg_cmd.modify_signal.connect(self.refresh_cmd)
@@ -279,9 +284,16 @@ class kdCarCheckDevSimulator(QMainWindow,Ui_MainWindow):
     @pyqtSlot()
     def on_lw_cmd_clicked(self):
         seleted_item = self.lw_cmd.currentItem()
+        self.tw_reply.clear()
         if seleted_item :
-            print(seleted_item.data(-1)[3])
-            self.refresh_reply(seleted_item.data(-1)[0])
+#             print(seleted_item.data(-1)[3])
+            item = seleted_item.data(-1)
+            self.cmd_id = item[0]
+            self.refresh_reply(item[0])
+            reply_type = "全部响应"
+            if item[4] == 2:
+                reply_type = "随机响应"
+            self.statusbar.showMessage(item[3] + ",16进制值：" + item[2] + ",响应方式：" + reply_type)
         
             
 # 新增响应            
@@ -318,6 +330,9 @@ class kdCarCheckDevSimulator(QMainWindow,Ui_MainWindow):
                 self.tw_reply.setItem(row_index,1,item)
                
                 row_index =+ 1
+    
+    def refresh_reply_by_thread(self):
+        self.refresh_reply(self.cmd_id)
 def main():
     app = QApplication(sys.argv)
     win = kdCarCheckDevSimulator()

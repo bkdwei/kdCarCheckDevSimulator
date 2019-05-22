@@ -9,8 +9,7 @@ from PyQt5.QtCore import pyqtSlot,pyqtSignal
 from .reply_ui import Ui_dlg_reply
 
 class reply(QDialog,Ui_dlg_reply):
-    add_signal = pyqtSignal(str) 
-    modify_signal = pyqtSignal(str) 
+    modify_signal = pyqtSignal() 
     
     def __init__(self):
         super().__init__()
@@ -26,10 +25,10 @@ class reply(QDialog,Ui_dlg_reply):
         
         if self.id:    
             self.modify_reply()
-            self.modify_signal.emit(self.le_remark.text())
+            self.modify_signal.emit()
         else :
             self.add_reply(self.le_value.text(), self.le_remark.text(),self.sp_sequence.text(),self.cmd_id)
-            self.add_signal.emit(self.le_remark.text())
+            self.modify_signal.emit()
         self.hide()
     @pyqtSlot()
     def on_buttonBox_rejected(self):
