@@ -15,13 +15,14 @@ import time
 import serial
 import binascii,re
 from os import environ,startfile,system
-from os.path import expanduser,join
+from os.path import expanduser,join,exists
+from shutil import copy2
 from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtWidgets import  QApplication,QDialog, \
     QMainWindow, QInputDialog,QLineEdit, QTreeWidgetItem, QTableWidgetItem
     
 from .kdCarCheckDevSimulator_ui import Ui_MainWindow
-from .fileutil import check_and_create
+from .fileutil import check_and_create_dir,get_file_realpath
 from .exception_handler import global_exception_hander
 from . import line
 from . import device
@@ -40,6 +41,9 @@ class kdCarCheckDevSimulator(QMainWindow,Ui_MainWindow):
         self.exception_handler.patch_excepthook()
         
         self.last_dir = None
+        check_and_create_dir(join(expanduser("~"),".config/kdCarCheckDevSimulator"))
+        if not exists(join(expanduser("~"),".config/kdCarCheckDevSimulator/kdCarCheckDevSimulator.db")) :
+            copy2(get_file_realpath("../data/kdCarCheckDevSimulator.db"),join(expanduser("~"),".config/kdCarCheckDevSimulator/kdCarCheckDevSimulator.db"))
         
         self.init_tw_dev()
         self.selected_device = None

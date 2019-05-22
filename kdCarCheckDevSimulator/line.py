@@ -3,10 +3,10 @@ Created on 2019年5月21日
 
 @author: bkd
 '''
-
+from os.path import expanduser,join
 import sqlite3
 
-db_file = "data/kdCarCheckDevSimulator.db"
+db_file = join(expanduser("~"),".config/kdCarCheckDevSimulator/kdCarCheckDevSimulator.db")
 
 def add_line(line_name):
     run_sql("insert into line (name) values('{}')".format(line_name))

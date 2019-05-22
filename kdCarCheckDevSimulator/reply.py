@@ -3,6 +3,7 @@ Created on 2019年5月21日
 
 @author: bkd
 '''
+from os.path import expanduser,join
 import sqlite3
 from PyQt5.QtWidgets import QDialog
 from PyQt5.QtCore import pyqtSlot,pyqtSignal
@@ -14,7 +15,7 @@ class reply(QDialog,Ui_dlg_reply):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
-        self.db_file = "data/kdCarCheckDevSimulator.db"
+        self.db_file = join(expanduser("~"),".config/kdCarCheckDevSimulator/kdCarCheckDevSimulator.db")
         self.id = None
         self.cmd_id = None
     

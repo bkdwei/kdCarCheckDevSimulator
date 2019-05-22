@@ -3,9 +3,10 @@ Created on 2019年5月21日
 
 @author: bkd
 '''
+from os.path import expanduser,join
 import sqlite3
 
-db_file = "data/kdCarCheckDevSimulator.db"
+db_file = join(expanduser("~"),".config/kdCarCheckDevSimulator/kdCarCheckDevSimulator.db")
 def add_device(big_item,model,com_port,line_id):
     conn = sqlite3.connect(db_file)
     cs = conn.cursor()
