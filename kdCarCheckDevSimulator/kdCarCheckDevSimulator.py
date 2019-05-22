@@ -37,8 +37,6 @@ class kdCarCheckDevSimulator(QMainWindow,Ui_MainWindow):
         self.exception_handler = global_exception_hander()
         self.exception_handler.patch_excepthook()
         
-#         self.config_file =join(expanduser('~') , ".config/kdTimer/profile.dat")
-#         check_and_create(self.config_file)
         self.last_dir = None
         
         self.init_tw_dev()
@@ -100,53 +98,59 @@ class kdCarCheckDevSimulator(QMainWindow,Ui_MainWindow):
         if t:
             t.stop()
             t.terminate()
+            del self.thread_list[self.selected_device[3]]
         
-        
+#     启动单个设备    
     @pyqtSlot()
     def on_action_start_single_dev_triggered(self):
         if not self.selected_device :
             return
         cmd_list = self.dlg_cmd.get_all(self.selected_device[2])
         t = monitor_thread(self.selected_device[3],self.selected_device[2],cmd_list)
+        t.show_status_signal.connect(self.show_monitor_status)
         self.thread_list[self.selected_device[3]] = t
         t.start()
         
-        if 2>1 :
-            return;
+#     启动检测线
+    @pyqtSlot()
+    def on_action_start_line_triggered(self):
+        if not self.selected_lineId :
+            self.statusbar.showMessage("请先选择检测线")
+            return 
         
-        print(self.selected_device[3])
-        self.com = serial.Serial(self.selected_device[3], 9600)
-        if not self.com.isOpen():
-            self.com.open()
-            
-        self.com.write("abc".encode())
-#         self.com.close()
-        self.receiveData()
+        device_list = device.get_all(self.selected_lineId)
+        if not device_list:
+            return
         
-        
-#     监听数据线程
-    def receiveData(self):
-        try:
-            while True:
-                count = self.com.in_waiting
-                if count > 0:
-                    data = self.com.read(count)
-                    if data and data != b'':
-                        print("receive:", data,self.asciiB2HexString(data))
-                        self.com.write(data)
-                    else:
-                        self.com.write(data)
-                    self.com.close()
-                    break
-        except KeyboardInterrupt:
-            if self.com != None:
-                self.com.close()
-
-#     字节数组转16进制字符串
-    def asciiB2HexString(self,strB):
-        strHex = binascii.b2a_hex(strB).upper()
-        return re.sub(r"(?<=\w)(?=(?:\w\w)+$)", " ", strHex.decode())+" "
+        for device_item in device_list :
+            cmd_list = self.dlg_cmd.get_all(device_item[2])
+            t = monitor_thread(device_item[3],device_item[2],cmd_list)
+            t.show_status_signal.connect(self.show_monitor_status)
+            self.thread_list[device_item[3]] = t
+            t.start()
     
+#     停止检测线
+    @pyqtSlot()
+    def on_action_stop_line_triggered(self):
+        if not self.selected_lineId :
+            self.statusbar.showMessage("请先选择检测线")
+            return 
+        device_list = device.get_all(self.selected_lineId)
+        if not device_list:
+            return
+        
+        for device_item in device_list :
+            t = self.thread_list[device_item[3]]
+            if t:
+                t.stop()
+                t.terminate()
+                del self.thread_list[device_item[3]]
+        
+    
+    def show_monitor_status(self,msg):
+        self.tb_monitor.append(msg)
+        self.tb_monitor.moveCursor(self.tb_monitor.textCursor().End)
+        
     @pyqtSlot()
     def on_pb_add_line_clicked(self):
         line_name,ok = QInputDialog.getText(self  , "新增检测线", "检测线名称")

@@ -144,6 +144,9 @@
          </item>
         </layout>
        </item>
+       <item>
+        <widget class="QTextBrowser" name="tb_monitor"/>
+       </item>
       </layout>
      </widget>
     </item>
@@ -267,19 +270,19 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="action_start_all_dev"/>
-   <addaction name="action_stop_all_dev"/>
+   <addaction name="action_start_line"/>
+   <addaction name="action_stop_line"/>
    <addaction name="action_start_single_dev"/>
    <addaction name="action_stop_single_dev"/>
   </widget>
-  <action name="action_start_all_dev">
+  <action name="action_start_line">
    <property name="text">
-    <string>启动所有设备</string>
+    <string>启动检测线</string>
    </property>
   </action>
-  <action name="action_stop_all_dev">
+  <action name="action_stop_line">
    <property name="text">
-    <string>停止所有设备</string>
+    <string>停止检测线</string>
    </property>
   </action>
   <action name="action_start_single_dev">

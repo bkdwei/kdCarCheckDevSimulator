@@ -30,7 +30,8 @@ class monitor_thread(QThread):
         if not self.port :
             return
                
-        print(self.port)
+        print("启动设备：" + self.model +",串口："+self.port)
+        self.show_status_signal.emit("启动设备：" + self.model +",串口："+self.port)
         self.com = serial.Serial(self.port, 9600)
         if not self.com.isOpen():
             self.com.open()
@@ -48,11 +49,15 @@ class monitor_thread(QThread):
                     if data and data != b'88':
                         receive_data = self.asciiB2HexString(data).strip()
                         print("receive:", receive_data)
+                        now = time.strftime('[%Y:%m:%d:%H:%M:%S]',time.localtime(time.time()))
+                        self.show_status_signal.emit(self.model + "," + now +"[接收]" + receive_data )
                         if receive_data in self.cmd_list :
                             reply_list = self.reply.get_all_by_cmd_value(receive_data)
                             if reply_list:
                                 print("reply:", reply_list[0][0])
-                                self.com.write(self.hexStringB2Hex(reply_list[0][0]))
+                                send_msg = self.hexStringB2Hex(reply_list[0][0])
+                                self.com.write(send_msg)
+                                self.show_status_signal.emit(self.model +"," + now + "[发送]" + reply_list[0][0] )
 #                     self.com.close()
 #                     break
         except KeyboardInterrupt:
@@ -84,4 +89,5 @@ class monitor_thread(QThread):
     def stop(self):
         if self.state:
             self.state = False
+            self.show_status_signal.emit(self.model + ",已关闭串口:" + self.port )
             print("已关闭串口" + self.port)
