@@ -29,6 +29,7 @@ from . import cmd
 from . import reply
 from .monitor_thread import monitor_thread
 from .import_cmd import import_cmd
+from .import_reply import import_reply
 
 class kdCarCheckDevSimulator(QMainWindow,Ui_MainWindow):
     def __init__(self):
@@ -156,6 +157,15 @@ class kdCarCheckDevSimulator(QMainWindow,Ui_MainWindow):
             self.import_cmd = import_cmd(connect_str)
             self.import_cmd.show_status_signal.connect(self.show_monitor_status)
             self.import_cmd.start()
+
+#     从mysql导入状态
+    @pyqtSlot()
+    def on_action_import_reply_by_mysql_triggered(self):
+        connect_str,ok = QInputDialog.getText(self  , "批量导入状态", "数据库连接信息,以分号分隔，如\nhost;port;user;password;db")
+        if ok :
+            self.import_reply = import_reply(connect_str)
+            self.import_reply.show_status_signal.connect(self.show_monitor_status)
+            self.import_reply.start()
     
     def show_monitor_status(self,msg):
         self.tb_monitor.append(msg)
@@ -220,6 +230,11 @@ class kdCarCheckDevSimulator(QMainWindow,Ui_MainWindow):
             self.refresh_cmd()
             self.tw_reply.clear()
             
+#             获取设备的相应
+            reply_list = self.dlg_reply.get_all_by_model(self.selected_device[2])
+            if reply_list :
+                for reply_item in reply_list :
+                    self.cb_status.addItem(reply_item[2],reply_item)
 
 #     新增设备
     @pyqtSlot()
@@ -342,6 +357,16 @@ class kdCarCheckDevSimulator(QMainWindow,Ui_MainWindow):
     
     def refresh_reply_by_thread(self):
         self.refresh_reply(self.cmd_id)
+    
+    @pyqtSlot()
+    def on_pb_connect_status_clicked(self):
+        reply = self.cb_status.currentData()
+        if self.cmd_id:
+            self.dlg_reply.add_reply(reply[1], reply[2], reply[3], self.cmd_id, reply[5])
+            self.refresh_reply_by_thread()
+            self.statusbar.showMessage("关联命令成功")
+        
+        
 def main():
     app = QApplication(sys.argv)
     win = kdCarCheckDevSimulator()

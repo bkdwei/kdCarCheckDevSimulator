@@ -5,11 +5,11 @@ Created on 2019年5月22日
 '''
 import MySQLdb
 
-from .cmd import cmd
+from .reply import reply
 
 from PyQt5.QtCore import QThread, pyqtSignal
 
-class import_cmd(QThread):
+class import_reply(QThread):
     show_status_signal = pyqtSignal(str)
     def __init__(self,connect_str):
         super().__init__()
@@ -18,7 +18,7 @@ class import_cmd(QThread):
         
         
     def run(self):
-        dlg_cmd = cmd()
+        dlg_reply = reply()
         confs = self.connect_str.split(";")
         print(confs)
         if len(confs) != 5:
@@ -32,18 +32,18 @@ class import_cmd(QThread):
         cursor = db.cursor()
         
         # 使用execute方法执行SQL语句
-        cursor.execute("SELECT m.model,c.cmd_value,c.cn_name from dev_cmd c join  dev_model m on c.model_id = m.id where c.del_flag = '0' order by m.model")
+        cursor.execute("SELECT m.model,s.status_value,s.cn_name from dev_status s join  dev_model m on s.model_id = m.id where s.del_flag = '0' order by m.model")
         
         # 使用 fetchone() 方法获取一条数据
-        cmd_list = cursor.fetchall()
+        reply_list = cursor.fetchall()
         
         # 关闭数据库连接
         db.close()
-        if cmd_list :
-            print(cmd_list)
-            for cmd_item in cmd_list :
+        if reply_list :
+            print(reply_list)
+            for reply_item in reply_list :
                 try:
-                    dlg_cmd.add_cmd(cmd_item[0], cmd_item[1], cmd_item[2], 1)
-                    self.show_status_signal.emit("导入成功： " + cmd_item[0] + ":" + cmd_item[2])
+                    dlg_reply.add_reply(reply_item[1], reply_item[2],1,None, reply_item[0])
+                    self.show_status_signal.emit("导入成功： " + reply_item[0] + ":" + reply_item[2])
                 except Exception as e:
-                    self.show_status_signal.emit("导入异常： " + str(cmd_item) + str(e))
+                    self.show_status_signal.emit("导入异常： " + str(reply_item) + str(e))

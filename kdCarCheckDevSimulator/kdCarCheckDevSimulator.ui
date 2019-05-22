@@ -186,6 +186,16 @@
          <item>
           <widget class="QListWidget" name="lw_cmd"/>
          </item>
+         <item>
+          <widget class="QPushButton" name="pb_connect_status">
+           <property name="text">
+            <string>关联状态</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="cb_status"/>
+         </item>
         </layout>
        </widget>
       </item>
@@ -275,6 +285,7 @@
    <addaction name="action_start_single_dev"/>
    <addaction name="action_stop_single_dev"/>
    <addaction name="action_import_cmd_by_mysql"/>
+   <addaction name="action_import_reply_by_mysql"/>
   </widget>
   <action name="action_start_line">
    <property name="text">
@@ -299,6 +310,11 @@
   <action name="action_import_cmd_by_mysql">
    <property name="text">
     <string>从mysql批量导入命令</string>
+   </property>
+  </action>
+  <action name="action_import_reply_by_mysql">
+   <property name="text">
+    <string>从mysql批量导入状态</string>
    </property>
   </action>
  </widget>

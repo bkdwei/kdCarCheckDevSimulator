@@ -8,11 +8,11 @@ import json
 import sys
 import serial
 import binascii,re
+import random
 from PyQt5.QtCore import QThread, pyqtSignal
 from .reply import reply
 
 class monitor_thread(QThread):
-    """ 下载心情随笔的线程 """
 
     show_status_signal = pyqtSignal(str)
 
@@ -21,6 +21,8 @@ class monitor_thread(QThread):
         self.port = port
         self.model = model
         self.cmd_list = [c[2] for c in cmd_list]
+        self.cmd_reply_type = {c[2]:c[4] for c in cmd_list}
+        print(self.cmd_reply_type)
         self.state = False 
         self.reply = reply()
 
@@ -54,10 +56,22 @@ class monitor_thread(QThread):
                         if receive_data in self.cmd_list :
                             reply_list = self.reply.get_all_by_cmd_value(receive_data)
                             if reply_list:
-                                print("reply:", reply_list[0][0])
-                                send_msg = self.hexStringB2Hex(reply_list[0][0])
-                                self.com.write(send_msg)
-                                self.show_status_signal.emit(self.model +"," + now + "[发送]" + reply_list[0][0] )
+                                reply_type = self.cmd_reply_type[receive_data]
+                                if reply_type == 1:
+                                    for reply_item in reply_list:
+                                        print("reply:", reply_item[0])
+                                        send_msg = self.hexStringB2Hex(reply_item[0])
+                                        self.com.write(send_msg)
+                                        now = time.strftime('[%Y:%m:%d:%H:%M:%S]',time.localtime(time.time()))
+                                        self.show_status_signal.emit(self.model +"," + now + "[发送]" + reply_item[0] + "  -  " + reply_item[1] )
+                                        time.sleep(2)
+                                else :
+                                    index = random.randint(-1,len(reply_list)-1)
+                                    print("index:" + str(index))
+                                    print("reply:", reply_list[index][0])
+                                    send_msg = self.hexStringB2Hex(reply_list[index][0])
+                                    self.com.write(send_msg)
+                                    self.show_status_signal.emit(self.model +"," + now + "[发送]" + reply_list[index][0] + "  -  " + reply_list[index][1])
 #                     self.com.close()
 #                     break
         except KeyboardInterrupt:

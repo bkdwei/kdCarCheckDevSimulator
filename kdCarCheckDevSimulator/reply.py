@@ -49,10 +49,10 @@ class reply(QDialog,Ui_dlg_reply):
             self.rb_random.setChecked(True)
         
         
-    def add_reply(self, value,remark,sequence,cmd_id):
+    def add_reply(self, value,remark,sequence,cmd_id,model= None):
         conn = sqlite3.connect(self.db_file)
         cs = conn.cursor()
-        cs.execute("insert into reply (value,remark,sequence,cmd_id) values(?,?,?,?)",(value,remark,sequence,cmd_id))
+        cs.execute("insert into reply (value,remark,sequence,cmd_id,model) values(?,?,?,?,?)",(value,remark,sequence,cmd_id,model))
         conn.commit()
         
     def delete_reply(self, replyId):
@@ -60,9 +60,11 @@ class reply(QDialog,Ui_dlg_reply):
     def delete_reply_by_cmdId(self, cmdId):
         self.run_sql("delete from reply where cmd_id = '{}'".format(cmdId))
     def get_all(self, cmd_id):
-        return self.run_sql("select id,value,remark,sequence,cmd_id from reply where cmd_id ='{}' order by sequence".format(cmd_id))
+        return self.run_sql("select id,value,remark,sequence,cmd_id,model from reply where cmd_id ='{}' order by sequence".format(cmd_id))
     def get_all_by_cmd_value(self, cmd_value):
-        return self.run_sql("select r.value from reply r join cmd c on r.cmd_id = c.id where c.value ='{}' order by sequence".format(cmd_value))
+        return self.run_sql("select r.value,r.remark from reply r join cmd c on r.cmd_id = c.id where c.value ='{}' order by sequence".format(cmd_value))
+    def get_all_by_model(self, model):
+        return self.run_sql("select id,value,remark,sequence,cmd_id, model from reply where model ='{}' order by sequence".format(model))
     def modify_reply(self):
         reply_type = 1
         if self.rb_random.isChecked():

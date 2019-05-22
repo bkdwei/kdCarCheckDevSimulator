@@ -65,7 +65,7 @@ class cmd(QDialog,Ui_dlg_cmd):
     def delete_cmd(self, cmdId):
         self.run_sql("delete from cmd where id = '{}'".format(cmdId))
     def get_all(self, model):
-        return self.run_sql("select id,model,value,remark,reply_type from cmd where model ='{}'".format(model))
+        return self.run_sql("select id,model,value,remark,reply_type from cmd where model ='{}' order by remark".format(model))
     def modify_cmd(self):
         reply_type = 1
         if self.rb_random.isChecked():
