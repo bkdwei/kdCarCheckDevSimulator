@@ -56,10 +56,12 @@ class reply(QDialog,Ui_dlg_reply):
         cs.execute("insert into reply (value,remark,sequence,cmd_id) values(?,?,?,?)",(value,remark,sequence,cmd_id))
         conn.commit()
         
-    def delete_reply(self, cmdId):
-        self.run_sql("delete from cmd where id = '{}'".format(cmdId))
-    def get_all(self, model):
-        return self.run_sql("select id,model,value,remark,reply_type from cmd where model ='{}'".format(model))
+    def delete_reply(self, replyId):
+        self.run_sql("delete from reply where id = '{}'".format(replyId))
+    def delete_reply_by_cmdId(self, cmdId):
+        self.run_sql("delete from reply where cmd_id = '{}'".format(cmdId))
+    def get_all(self, cmd_id):
+        return self.run_sql("select id,value,remark,sequence,cmd_id from reply where cmd_id ='{}' order by sequence".format(cmd_id))
     def modify_reply(self):
         reply_type = 1
         if self.rb_random.isChecked():

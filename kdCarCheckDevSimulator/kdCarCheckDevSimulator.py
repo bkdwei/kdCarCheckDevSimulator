@@ -16,7 +16,7 @@ from os import environ,startfile,system
 from os.path import expanduser,join
 from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtWidgets import  QApplication,QDialog, \
-    QMainWindow, QInputDialog,QLineEdit, QTreeWidgetItem
+    QMainWindow, QInputDialog,QLineEdit, QTreeWidgetItem, QTableWidgetItem
     
 from .kdCarCheckDevSimulator_ui import Ui_MainWindow
 from .fileutil import check_and_create
@@ -43,6 +43,7 @@ class kdCarCheckDevSimulator(QMainWindow,Ui_MainWindow):
         self.selected_lineId = None
         
         self.tw_device.itemPressed.connect(self.on_tw_device_itemPressed)
+        self.lw_cmd.clicked.connect(self.on_lw_cmd_clicked)
         self.dlg_cmd = cmd.cmd()
         self.dlg_reply = reply.reply()
 #         self.dlg_reply.add_signal.connect(self.refresh_cmd)
@@ -197,9 +198,12 @@ class kdCarCheckDevSimulator(QMainWindow,Ui_MainWindow):
     @pyqtSlot()
     def on_pb_del_cmd_clicked(self):
         seleted_item = self.lw_cmd.currentItem()
-        self.dlg_cmd.delete_cmd(seleted_item.data(-1)[0])
+        self.dlg_reply.delete_reply_by_cmdId(seleted_item.data(-1)[0])
+        self.tw_reply.clear()
         
+        self.dlg_cmd.delete_cmd(seleted_item.data(-1)[0])
         self.refresh_cmd()
+        
         self.statusbar.showMessage("删除命令成功")   
 
 #     修改命令
@@ -209,6 +213,15 @@ class kdCarCheckDevSimulator(QMainWindow,Ui_MainWindow):
         if seleted_item :
             self.dlg_cmd.set_cmd_item(seleted_item.data(-1))
             self.dlg_cmd.show()
+    
+#     单击命令
+    @pyqtSlot()
+    def on_lw_cmd_clicked(self):
+        seleted_item = self.lw_cmd.currentItem()
+        if seleted_item :
+            print(seleted_item.data(-1)[3])
+            self.refresh_reply(seleted_item.data(-1)[0])
+        
             
 # 新增响应            
     @pyqtSlot()
@@ -218,7 +231,32 @@ class kdCarCheckDevSimulator(QMainWindow,Ui_MainWindow):
             self.dlg_reply.set_cmd(seleted_item.data(-1)[3])
             self.dlg_reply.cmd_id = seleted_item.data(-1)[0]
             self.dlg_reply.show()
+# 删除响应            
+    @pyqtSlot()
+    def on_pb_del_reply_clicked(self):
+        cur_row = self.tw_reply.currentRow()
+        seleted_item = self.tw_reply.item(cur_row,1)
+        if seleted_item :
+            item = seleted_item.data(-1)
+            if item:
+                self.dlg_reply.delete_reply(item[0])
+                self.refresh_reply(item[4])
             
+#     刷新响应表格            
+    def refresh_reply(self,cmd_id):
+        reply_list = self.dlg_reply.get_all(cmd_id)
+        if reply_list:
+            row_index = 0
+            self.tw_reply.clear()
+            for reply_item in reply_list : 
+                item_index = QTableWidgetItem(str(reply_item[3]))
+                self.tw_reply.setItem(row_index,0,item_index)
+                
+                item = QTableWidgetItem(reply_item[2])
+                item.setData(-1,reply_item)
+                self.tw_reply.setItem(row_index,1,item)
+               
+                row_index =+ 1
 def main():
     app = QApplication(sys.argv)
     win = kdCarCheckDevSimulator()

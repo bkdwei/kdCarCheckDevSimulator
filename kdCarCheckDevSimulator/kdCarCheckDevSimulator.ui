@@ -218,7 +218,26 @@
           </layout>
          </item>
          <item>
-          <widget class="QTableWidget" name="tw_reply"/>
+          <widget class="QTableWidget" name="tw_reply">
+           <property name="rowCount">
+            <number>10</number>
+           </property>
+           <property name="columnCount">
+            <number>2</number>
+           </property>
+           <row/>
+           <row/>
+           <row/>
+           <row/>
+           <row/>
+           <row/>
+           <row/>
+           <row/>
+           <row/>
+           <row/>
+           <column/>
+           <column/>
+          </widget>
          </item>
         </layout>
        </widget>
