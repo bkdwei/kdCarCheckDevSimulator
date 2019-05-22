@@ -12,6 +12,8 @@ Created on 2019年5月9日
 '''
 import sys
 import time
+import serial
+import binascii,re
 from os import environ,startfile,system
 from os.path import expanduser,join
 from PyQt5.QtCore import pyqtSlot
@@ -25,6 +27,7 @@ from . import line
 from . import device
 from . import cmd 
 from . import reply
+from .monitor_thread import monitor_thread
 
 class kdCarCheckDevSimulator(QMainWindow,Ui_MainWindow):
     def __init__(self):
@@ -46,9 +49,9 @@ class kdCarCheckDevSimulator(QMainWindow,Ui_MainWindow):
         self.lw_cmd.clicked.connect(self.on_lw_cmd_clicked)
         self.dlg_cmd = cmd.cmd()
         self.dlg_reply = reply.reply()
+        self.thread_list= {}
 #         self.dlg_reply.add_signal.connect(self.refresh_cmd)
 #         self.dlg_reply.modify_signal.connect(self.refresh_cmd) 
-        
         
                   
     def init_tw_dev(self):
@@ -87,11 +90,66 @@ class kdCarCheckDevSimulator(QMainWindow,Ui_MainWindow):
     @pyqtSlot()
     def on_action_start_all_port_triggered(self):
         print("g")
+        
+#     停止单个设备        
+    @pyqtSlot()
+    def on_action_stop_single_dev_triggered(self):
+        if not self.selected_device :
+            return
+        t = self.thread_list[self.selected_device[3]]
+        if t:
+            t.stop()
+            t.terminate()
+        
+        
+    @pyqtSlot()
+    def on_action_start_single_dev_triggered(self):
+        if not self.selected_device :
+            return
+        cmd_list = self.dlg_cmd.get_all(self.selected_device[2])
+        t = monitor_thread(self.selected_device[3],self.selected_device[2],cmd_list)
+        self.thread_list[self.selected_device[3]] = t
+        t.start()
+        
+        if 2>1 :
+            return;
+        
+        print(self.selected_device[3])
+        self.com = serial.Serial(self.selected_device[3], 9600)
+        if not self.com.isOpen():
+            self.com.open()
+            
+        self.com.write("abc".encode())
+#         self.com.close()
+        self.receiveData()
+        
+        
+#     监听数据线程
+    def receiveData(self):
+        try:
+            while True:
+                count = self.com.in_waiting
+                if count > 0:
+                    data = self.com.read(count)
+                    if data and data != b'':
+                        print("receive:", data,self.asciiB2HexString(data))
+                        self.com.write(data)
+                    else:
+                        self.com.write(data)
+                    self.com.close()
+                    break
+        except KeyboardInterrupt:
+            if self.com != None:
+                self.com.close()
+
+#     字节数组转16进制字符串
+    def asciiB2HexString(self,strB):
+        strHex = binascii.b2a_hex(strB).upper()
+        return re.sub(r"(?<=\w)(?=(?:\w\w)+$)", " ", strHex.decode())+" "
     
     @pyqtSlot()
     def on_pb_add_line_clicked(self):
         line_name,ok = QInputDialog.getText(self  , "新增检测线", "检测线名称")
-        print(ok,line_name)
         if ok :
             line.add_line(line_name)
             root_item = self.tw_device.invisibleRootItem()
@@ -139,7 +197,6 @@ class kdCarCheckDevSimulator(QMainWindow,Ui_MainWindow):
         else :
             self.selected_device = seleted_item.data(0,-2)
             self.selected_lineId = self.selected_device[4]
-            print(self.selected_device[4])
             self.le_big_item.setText(self.selected_device[1])
             self.le_dev_model.setText(self.selected_device[2])
             self.le_com_port.setText(self.selected_device[3])
