@@ -77,7 +77,8 @@ class kdCarCheckDevSimulator(QMainWindow, Ui_MainWindow):
                 if device_list:
                     for device_item in device_list:
                         dev_child = QTreeWidgetItem()
-                        dev_child.setText(0, device_item[2])
+                        dev_child.setText(
+                            0, device_item[2] + "_" + device_item[1])
                         dev_child.setData(0, -1, 1)
                         # 设置device_item
                         dev_child.setData(0, -2, device_item)
@@ -227,7 +228,7 @@ class kdCarCheckDevSimulator(QMainWindow, Ui_MainWindow):
         if seleted_item.data(0, -1) == 0:
             self.selected_lineId = seleted_item.data(0, -2)
             self.selected_device = None
-            self.on_pb_add_device_clicked()
+#             self.on_pb_add_device_clicked()
             self.tw_reply.clear()
         else:
             self.selected_device = seleted_item.data(0, -2)
@@ -346,6 +347,7 @@ class kdCarCheckDevSimulator(QMainWindow, Ui_MainWindow):
         if seleted_item:
             self.dlg_reply.set_cmd(seleted_item.data(-1)[3])
             self.dlg_reply.cmd_id = seleted_item.data(-1)[0]
+            self.dlg_reply.id = None
             self.dlg_reply.show()
 # 删除响应
 
