@@ -18,7 +18,7 @@ class monitor_thread(QThread):
         super().__init__()
         self.port = port
         self.model = model
-        self.cmd_list = [c[2] for c in cmd_list]
+        self.cmd_list = [c[2].upper() for c in cmd_list]
         self.cmd_reply_type = {c[2]: c[4] for c in cmd_list}
         print(self.cmd_reply_type)
         self.state = False
@@ -30,18 +30,24 @@ class monitor_thread(QThread):
         self.com = com
 
     def run(self):
-        if not self.port:
-            return
+        try:
+            if not self.port:
+                return
 
-        print("启动设备：" + self.model + ",串口：" + self.port)
-        self.show_status_signal.emit("启动设备：" + self.model + ",串口：" + self.port)
-        if not self.com:
-            self.com = serial.Serial(self.port, 9600)
-        if not self.com.isOpen():
-            self.com.open()
+            print("启动设备：" + self.model + ",串口：" + self.port)
+            self.show_status_signal.emit(
+                "启动设备：" + self.model + ",串口：" + self.port)
+            if not self.com:
+                self.com = serial.Serial(self.port, 9600)
+            if not self.com.isOpen():
+                self.com.open()
 
-        self.state = True
-        self.receiveData()
+            self.state = True
+            self.receiveData()
+        except Exception as e:
+            self.show_status_signal.emit(
+                "线程异常：" + self.model + ",串口：" + self.port + ",异常详情:" + str(e))
+
 
 #     监听数据线程
     def receiveData(self):
@@ -51,7 +57,8 @@ class monitor_thread(QThread):
                 if count > 0:
                     data = self.com.read(count)
                     if data and data != b'88':
-                        receive_data = self.asciiB2HexString(data).strip()
+                        receive_data = self.asciiB2HexString(
+                            data).strip().upper()
                         print("receive:", receive_data)
                         now = time.strftime(
                             '[%Y:%m:%d:%H:%M:%S]', time.localtime(time.time()))
@@ -85,6 +92,7 @@ class monitor_thread(QThread):
                                         '[%Y:%m:%d:%H:%M:%S]', time.localtime(time.time()))
                                     self.show_status_signal.emit(
                                         self.model + "," + now + "[发送]" + reply_item[0] + "  -  " + reply_item[1])
+                                    time.sleep(3)
                             else:
                                 # 如果缓存指定的类型为全部响应的命令的响应列表为空，则缓存一下
                                 if not self.special_cmd_reply_list:

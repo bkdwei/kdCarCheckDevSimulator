@@ -203,10 +203,12 @@ class kdCarCheckDevSimulator(QMainWindow, Ui_MainWindow):
     def on_pb_direct_reply_clicked(self):
         if not self.selected_device:
             self.statusbar.showMessage("请先选择设备")
+            return
 
         msg = self.le_direct_reply.text().strip()
         if msg == "":
             self.statusbar.showMessage("请先输入要发送的16进制内容")
+            return
 
         if self.selected_device[3] in self.thread_list:
             t = self.thread_list[self.selected_device[3]]

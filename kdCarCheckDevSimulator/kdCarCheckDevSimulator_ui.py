@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(800, 600)
+        MainWindow.resize(868, 600)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.horizontalLayout_5 = QtWidgets.QHBoxLayout(self.centralwidget)
@@ -158,7 +158,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_5.addLayout(self.verticalLayout_4)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 23))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 868, 23))
         self.menubar.setObjectName("menubar")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
@@ -207,6 +207,7 @@ class Ui_MainWindow(object):
         self.label_5.setText(_translate("MainWindow", "数据位："))
         self.label_6.setText(_translate("MainWindow", "停止位："))
         self.label.setText(_translate("MainWindow", "直接发送响应"))
+        self.le_direct_reply.setText(_translate("MainWindow", "45 4E 44 0D"))
         self.groupBox_2.setTitle(_translate("MainWindow", "命令"))
         self.pb_add_cmd.setText(_translate("MainWindow", "新增命令"))
         self.pb_del_cmd.setText(_translate("MainWindow", "删除命令"))
