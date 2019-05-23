@@ -14,7 +14,7 @@ class monitor_thread(QThread):
 
     show_status_signal = pyqtSignal(str)
 
-    def __init__(self, port, model, cmd_list):
+    def __init__(self, port, model, cmd_list, com=None):
         super().__init__()
         self.port = port
         self.model = model
@@ -26,13 +26,17 @@ class monitor_thread(QThread):
         self.special_cmd_reply_list = None  # 缓存指定的类型为全部响应的命令的响应列表
         self.special_cmd_reply_list_index = -1  # 保存全部响应的命令列表的位置
 
+        # 修正两个项目共用一个设备，导致无法打开串口的bug
+        self.com = com
+
     def run(self):
         if not self.port:
             return
 
         print("启动设备：" + self.model + ",串口：" + self.port)
         self.show_status_signal.emit("启动设备：" + self.model + ",串口：" + self.port)
-        self.com = serial.Serial(self.port, 9600)
+        if not self.com:
+            self.com = serial.Serial(self.port, 9600)
         if not self.com.isOpen():
             self.com.open()
 
@@ -131,3 +135,12 @@ class monitor_thread(QThread):
             self.state = False
             self.show_status_signal.emit(self.model + ",已关闭串口:" + self.port)
             print("已关闭串口" + self.port)
+
+    # 直接发送响应
+    def send(self, msg):
+        send_msg = self.hexStringB2Hex(msg)
+        self.com.write(send_msg)
+        now = time.strftime(
+            '[%Y:%m:%d:%H:%M:%S]', time.localtime(time.time()))
+        self.show_status_signal.emit(
+            self.model + "," + now + "[直接发送]" + msg)

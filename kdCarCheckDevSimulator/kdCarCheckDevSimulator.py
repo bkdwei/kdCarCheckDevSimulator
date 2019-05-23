@@ -102,11 +102,15 @@ class kdCarCheckDevSimulator(QMainWindow, Ui_MainWindow):
     def on_action_stop_single_dev_triggered(self):
         if not self.selected_device:
             return
-        t = self.thread_list[self.selected_device[3]]
-        if t:
-            t.stop()
-            t.terminate()
-            del self.thread_list[self.selected_device[3]]
+        # 判断是否已经关闭过这个端口
+        if self.selected_device[3] in self.thread_list:
+            t = self.thread_list[self.selected_device[3]]
+            if t:
+                t.stop()
+                t.terminate()
+                del self.thread_list[self.selected_device[3]]
+        else:
+            self.show_monitor_status(self.selected_device[3] + "已被其他线程关闭")
 
 #     启动单个设备
     @pyqtSlot()
@@ -114,8 +118,12 @@ class kdCarCheckDevSimulator(QMainWindow, Ui_MainWindow):
         if not self.selected_device:
             return
         cmd_list = self.dlg_cmd.get_all(self.selected_device[2])
+        com = None
+        # 判断是否已经打开过这个端口
+        if self.selected_device[3] in self.thread_list:
+            com = self.thread_list[self.selected_device[3]].com
         t = monitor_thread(
-            self.selected_device[3], self.selected_device[2], cmd_list)
+            self.selected_device[3], self.selected_device[2], cmd_list, com)
         t.show_status_signal.connect(self.show_monitor_status)
         self.thread_list[self.selected_device[3]] = t
         t.start()
@@ -133,7 +141,12 @@ class kdCarCheckDevSimulator(QMainWindow, Ui_MainWindow):
 
         for device_item in device_list:
             cmd_list = self.dlg_cmd.get_all(device_item[2])
-            t = monitor_thread(device_item[3], device_item[2], cmd_list)
+            com = None
+            # 判断是否已经打开过这个端口
+            if device_item[3] in self.thread_list:
+                com = self.thread_list[device_item[3]].com
+            t = monitor_thread(
+                device_item[3], device_item[2], cmd_list, com)
             t.show_status_signal.connect(self.show_monitor_status)
             self.thread_list[device_item[3]] = t
             t.start()
@@ -149,11 +162,15 @@ class kdCarCheckDevSimulator(QMainWindow, Ui_MainWindow):
             return
 
         for device_item in device_list:
-            t = self.thread_list[device_item[3]]
-            if t:
-                t.stop()
-                t.terminate()
-                del self.thread_list[device_item[3]]
+            # 判断串口是否已关闭过
+            if device_item[3] in self.thread_list:
+                t = self.thread_list[device_item[3]]
+                if t:
+                    t.stop()
+                    t.terminate()
+                    del self.thread_list[device_item[3]]
+            else:
+                self.show_monitor_status(device_item[3] + "已被其他线程关闭")
 
 #     从mysql导入命令
     @pyqtSlot()
@@ -180,6 +197,20 @@ class kdCarCheckDevSimulator(QMainWindow, Ui_MainWindow):
     def show_monitor_status(self, msg):
         self.tb_monitor.append(msg)
         self.tb_monitor.moveCursor(self.tb_monitor.textCursor().End)
+
+    # 直接发送响应
+    @pyqtSlot()
+    def on_pb_direct_reply_clicked(self):
+        if not self.selected_device:
+            self.statusbar.showMessage("请先选择设备")
+
+        msg = self.le_direct_reply.text().strip()
+        if msg == "":
+            self.statusbar.showMessage("请先输入要发送的16进制内容")
+
+        if self.selected_device[3] in self.thread_list:
+            t = self.thread_list[self.selected_device[3]]
+            t.send(msg)
 
     @pyqtSlot()
     def on_pb_add_line_clicked(self):
