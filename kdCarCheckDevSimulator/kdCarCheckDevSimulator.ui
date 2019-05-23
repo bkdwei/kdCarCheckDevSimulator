@@ -187,6 +187,9 @@
         </layout>
        </item>
        <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_6"/>
+       </item>
+       <item>
         <widget class="QTextBrowser" name="tb_monitor"/>
        </item>
       </layout>
@@ -310,6 +313,14 @@
      <height>23</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menu">
+    <property name="title">
+     <string>设备</string>
+    </property>
+    <addaction name="action_copy_device"/>
+    <addaction name="action_paste_device"/>
+   </widget>
+   <addaction name="menu"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QToolBar" name="toolBar">
@@ -328,6 +339,7 @@
    <addaction name="action_stop_single_dev"/>
    <addaction name="action_import_cmd_by_mysql"/>
    <addaction name="action_import_reply_by_mysql"/>
+   <addaction name="action_clear_terminal"/>
   </widget>
   <action name="action_start_line">
    <property name="text">
@@ -357,6 +369,21 @@
   <action name="action_import_reply_by_mysql">
    <property name="text">
     <string>从mysql批量导入状态</string>
+   </property>
+  </action>
+  <action name="action_copy_device">
+   <property name="text">
+    <string>克隆设备</string>
+   </property>
+  </action>
+  <action name="action_paste_device">
+   <property name="text">
+    <string>粘贴设备</string>
+   </property>
+  </action>
+  <action name="action_clear_terminal">
+   <property name="text">
+    <string>清空终端</string>
    </property>
   </action>
  </widget>

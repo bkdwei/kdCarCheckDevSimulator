@@ -48,6 +48,7 @@ class kdCarCheckDevSimulator(QMainWindow, Ui_MainWindow):
         self.selected_device = None
         self.selected_lineId = None
         self.cmd_id = None
+        self.cloning_device = None
 
         self.tw_device.itemPressed.connect(self.on_tw_device_itemPressed)
         self.tw_reply.itemClicked.connect(self.on_tw_reply_itemClicked)
@@ -442,6 +443,35 @@ class kdCarCheckDevSimulator(QMainWindow, Ui_MainWindow):
             item = seleted_item.data(-1)
             if item:
                 self.statusbar.showMessage(item[2] + "，16进制值：" + item[1])
+
+#     清空终端的消息
+    @pyqtSlot()
+    def on_action_clear_terminal_triggered(self):
+        self.tb_monitor.clear()
+
+#     克隆设备
+    @pyqtSlot()
+    def on_action_copy_device_triggered(self):
+        if not self.selected_device:
+            self.statusbar.showMessage("请先选择需要克隆的设备")
+            return
+        self.cloning_device = self.selected_device
+        self.statusbar.showMessage("克隆的设备成功，请选择检测线并粘贴设备")
+
+#     粘贴设备
+    @pyqtSlot()
+    def on_action_paste_device_triggered(self):
+        if not self.cloning_device:
+            self.statusbar.showMessage("请先克隆设备")
+            return
+
+        if not self.selected_lineId:
+            self.statusbar.showMessage("请先选择需要粘贴设备的检测线")
+            return
+        device.add_device(
+            self.cloning_device[1], self.cloning_device[2], self.cloning_device[3], self.selected_lineId)
+        self.init_tw_dev()
+        self.statusbar.showMessage("新增设备成功")
 
 
 def main():
