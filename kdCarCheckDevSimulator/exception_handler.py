@@ -3,17 +3,19 @@ Created on 2019年4月8日
 
 @author: bkd
 '''
-from traceback import format_exception
 import sys
-from PyQt5.QtWidgets import QMessageBox
+from tkinter import Tk, Label
+from traceback import format_exception
+
 
 class global_exception_hander:
-    def new_except_hook(self,etype, evalue, tb):
-        print(''.join(format_exception(etype, evalue, tb)))
-        QMessageBox.information(None, 
-                                      str('error'),
-                                      ''.join(format_exception(etype, evalue, tb)))
-        sys.exit()
+
+    def new_except_hook(self, etype, evalue, tb):
+        err_msg = ''.join(format_exception(etype, evalue, tb))
+        print(err_msg)
+        win = Tk(className="系统异常")
+        Label(win, text=err_msg).pack()
+        win.mainloop()
     
 #     注册全局异常处理类
     def patch_excepthook(self):

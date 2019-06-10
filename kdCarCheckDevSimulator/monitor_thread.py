@@ -29,23 +29,23 @@ class monitor_thread(QThread):
         self.com = com
 
     def run(self):
-#         try:
-        if not self.port:
-            return
-
-        print("启动设备：" + self.model + ",串口：" + self.port)
-        self.show_status_signal.emit(
-            "启动设备：" + self.model + ",串口：" + self.port)
-        if not self.com:
-            self.com = serial.Serial(self.port, 9600)
-        if not self.com.isOpen():
-            self.com.open()
-
-        self.state = True
-        self.receiveData()
-#         except Exception as e:
-#             self.show_status_signal.emit(
-#                 "线程异常：" + self.model + ",串口：" + self.port + ",异常详情:" + str(e))
+        try:
+            if not self.port:
+                return
+    
+            print("启动设备：" + self.model + ",串口：" + self.port)
+            self.show_status_signal.emit(
+                "启动设备：" + self.model + ",串口：" + self.port)
+            if not self.com:
+                self.com = serial.Serial(self.port, 9600, parity='N', stopbits=1, timeout=1)
+            if not self.com.isOpen():
+                self.com.open()
+    
+            self.state = True
+            self.receiveData()
+        except Exception as e:
+            self.show_status_signal.emit(
+                "线程异常：" + self.model + ",串口：" + self.port + ",异常详情:" + str(e))
 
 #     监听数据线程
     def receiveData(self):
