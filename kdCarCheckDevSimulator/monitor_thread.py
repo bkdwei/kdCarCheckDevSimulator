@@ -94,7 +94,7 @@ class monitor_thread(QThread):
                                 '[%Y:%m:%d:%H:%M:%S]', time.localtime(time.time()))
                             self.show_status_signal.emit(
                                 self.model + "," + now + "[发送]" + reply_item[0] + "  -  " + reply_item[1])
-                            time.sleep(1)
+                            #time.sleep(1)
                         else:
                             reply_list = self.reply.get_all_by_cmd_value(receive_data)
 
