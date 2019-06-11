@@ -89,12 +89,13 @@ class monitor_thread(QThread):
                             reply_item = reply_list[index]
                             print("reply:", reply_item[1], reply_item[0])
                             send_msg = self.hexStringB2Hex(reply_item[0])
-                            self.com.write(send_msg)
+                            if send_msg != -1:
+                                self.com.write(send_msg)
                             now = time.strftime(
                                 '[%Y:%m:%d:%H:%M:%S]', time.localtime(time.time()))
                             self.show_status_signal.emit(
                                 self.model + "," + now + "[发送]" + reply_item[0] + "  -  " + reply_item[1])
-                            #time.sleep(1)
+                            # time.sleep(1)
                         else:
                             reply_list = self.reply.get_all_by_cmd_value(receive_data)
 
