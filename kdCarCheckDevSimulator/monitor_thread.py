@@ -19,7 +19,7 @@ class monitor_thread(QThread):
         self.port = port
         self.model = model
         self.cmd_list = [c[2].upper() for c in cmd_list]
-        self.cmd_reply_type = {c[2]: c[4] for c in cmd_list}  # 记录命令的响应方式
+        self.cmd_reply_type = {c[2].upper(): c[4] for c in cmd_list}  # 记录命令的响应方式
         print(self.cmd_reply_type)
         self.state = False
         self.reply = reply()
@@ -29,23 +29,23 @@ class monitor_thread(QThread):
         self.com = com
 
     def run(self):
-        try:
-            if not self.port:
-                return
-    
-            print("启动设备：" + self.model + ",串口：" + self.port)
-            self.show_status_signal.emit(
-                "启动设备：" + self.model + ",串口：" + self.port)
-            if not self.com:
-                self.com = serial.Serial(self.port, 9600, parity='N', stopbits=1, timeout=1)
-            if not self.com.isOpen():
-                self.com.open()
-    
-            self.state = True
-            self.receiveData()
-        except Exception as e:
-            self.show_status_signal.emit(
-                "线程异常：" + self.model + ",串口：" + self.port + ",异常详情:" + str(e))
+#         try:
+        if not self.port:
+            return
+
+        print("启动设备：" + self.model + ",串口：" + self.port)
+        self.show_status_signal.emit(
+            "启动设备：" + self.model + ",串口：" + self.port)
+        if not self.com:
+            self.com = serial.Serial(self.port, 9600, parity='N', stopbits=1, timeout=1)
+        if not self.com.isOpen():
+            self.com.open()
+
+        self.state = True
+        self.receiveData()
+#         except Exception as e:
+#             self.show_status_signal.emit(
+#                 "线程异常：" + self.model + ",串口：" + self.port + ",异常详情:" + str(e))
 
 #     监听数据线程
     def receiveData(self):
@@ -66,9 +66,11 @@ class monitor_thread(QThread):
                             continue
                         
                         # 获取响应类型
-                        if not self.cmd_reply_type :
+                        if not self.cmd_reply_type and (not receive_data in self.cmd_reply_type) :
                             continue
                         print("aa")
+#                         if not receive_data in self.cmd_reply_type :
+#                             return 
                         reply_type = self.cmd_reply_type[receive_data]
                         if reply_type == 1:
                             reply_list = self.reply.get_all_by_cmd_value(receive_data)
